@@ -1,0 +1,153 @@
+# Creating the HTML files for the templates folder
+html_files_content = {
+    "app/templates/register.html": """
+{% extends "layout.html" %}
+{% block content %}
+    <div class="form-container">
+        <h2>Register</h2>
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.username.label }}
+                {{ form.username(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.email.label }}
+                {{ form.email(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.password.label }}
+                {{ form.password(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.confirm_password.label }}
+                {{ form.confirm_password(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
+        </form>
+    </div>
+{% endblock %}
+""",
+    "app/templates/login.html": """
+{% extends "layout.html" %}
+{% block content %}
+    <div class="form-container">
+        <h2>Login</h2>
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.email.label }}
+                {{ form.email(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.password.label }}
+                {{ form.password(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
+        </form>
+    </div>
+{% endblock %}
+""",
+    "app/templates/home.html": """
+{% extends "layout.html" %}
+{% block content %}
+    <div class="container">
+        <h2>Suas Tarefas</h2>
+        <a class="btn btn-primary" href="{{ url_for('new_task') }}">Nova Tarefa</a>
+        <ul class="list-group mt-4">
+            {% for task in tasks %}
+                <li class="list-group-item">
+                    <h5>{{ task.title }} ({{ task.status }})</h5>
+                    <p>{{ task.description }}</p>
+                    <a href="{{ url_for('update_task', task_id=task.id) }}" class="btn btn-secondary">Editar</a>
+                    <form action="{{ url_for('delete_task', task_id=task.id) }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-danger">Deletar</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
+""",
+    "app/templates/create_task.html": """
+{% extends "layout.html" %}
+{% block content %}
+    <div class="form-container">
+        <h2>{% if title %}{{ title }}{% else %}Nova Tarefa{% endif %}</h2>
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.title.label }}
+                {{ form.title(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.description.label }}
+                {{ form.description(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.status.label }}
+                {{ form.status(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
+        </form>
+    </div>
+{% endblock %}
+""",
+    "app/templates/layout.html": """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento de Tarefas</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="{{ url_for('home') }}">Gerenciamento de Tarefas</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ml-auto">
+                {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('register') }}">Registrar</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="alert-container mt-3">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </div>
+
+</body>
+</html>
+"""
+}
+for filepath, content in html_files_content.items():
+    with open(os.path.join(project_dir, filepath), "w") as f:
+        f.write(content)
+
+project_dir

@@ -1,0 +1,18 @@
+project/
+│
+├── app/
+│   ├── __init__.py
+│   ├── models.py
+│   ├── routes.py
+│   ├── static/
+│   └── templates/
+│
+├── migrations/
+│
+├── tests/
+│
+├── venv/
+│
+├── config.py
+├── run.py
+└── requirements.txt
